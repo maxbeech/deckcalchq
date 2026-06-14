@@ -43,7 +43,6 @@ export interface DeckResult {
   guardHeightIn: number;
   needsGuard: boolean;
   stairs: { risers: number; riserIn: number; treads: number; treadRunIn: number; totalRunIn: number; needsLanding: boolean } | null;
-  deckAreaSqft: number;
   valid: boolean;       // false when the deck can't be framed prescriptively as drawn
   warnings: string[];
   fmt: (inches: number) => string;
@@ -151,7 +150,6 @@ export function computeDeck(raw: DeckInputs): DeckResult {
 
   // --- Guard (IRC R312) — required when walking surface > 30" above grade ---
   const needsGuard = inp.heightFt * 12 > 30;
-  const deckAreaSqft = Math.round(inp.width * inp.projection);
   const valid = joistOk && inp.projection <= 18;
 
   return {
@@ -160,7 +158,7 @@ export function computeDeck(raw: DeckInputs): DeckResult {
     postSize, footingTribSqft: Math.round(tributarySqft * 10) / 10, footingLoadLb: loadLb,
     footingAreaSqft: Math.round(areaSqft * 100) / 100, footingDiameterIn, footingDepthIn,
     ledgerLagSpacingIn, ledgerBoltSpacingIn,
-    guardHeightIn: 36, needsGuard, stairs, deckAreaSqft, valid,
+    guardHeightIn: 36, needsGuard, stairs, valid,
     warnings, fmt: ftIn,
   };
 }

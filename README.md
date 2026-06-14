@@ -13,8 +13,13 @@ Live: https://deckcalchq.vercel.app
   Redwood/Cedar group). No fabricated numbers; values are transcribed from the code.
 - **Footing size** from tributary post load ÷ soil bearing (IRC R507.3), and **footing depth**
   below the frost line for the chosen state (IRC R403.1.4).
-- **Stair layout** (risers, treads, total run) to IRC R311.7, **guard height** to R312.
-- **Material list & build-cost** range.
+- **Ledger fastener spacing** (½″ lag / through-bolt) per IRC Table R507.9.1.3.
+- **Stair layout** (risers, treads, total run, landing) to IRC R311.7, **guard height** to R312.
+- **Scale framing diagram** (SVG plan view of joists, beam, posts & footings).
+- **Itemized cost & materials** (`lib/cost.ts`): decking by material, board/screw counts,
+  substructure, footings, railing, stairs, permit — DIY-material to contractor-installed range.
+- **Full span tables** (joist R507.6 × 3 species, beam R507.5) rendered from the same data the
+  engine uses (single source of truth), and a **/methodology** page citing every code source.
 
 ## SEO surface
 
