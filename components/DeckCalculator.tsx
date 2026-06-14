@@ -40,10 +40,14 @@ export default function DeckCalculator({ initialState, focus }: { initialState?:
   const [decking, setDecking] = useState<Decking>(DEFAULT_DECKING);
   const [adv, setAdv] = useState(false);
   const r = useMemo(() => computeDeck(inp), [inp]);
+  // Sanitised dimensions (same clamp the engine applies) so the diagram, cost and
+  // labels never display a negative, zero or out-of-range value mid-edit.
+  const sw = Math.min(60, Math.max(2, inp.width || 0));
+  const sp = Math.min(40, Math.max(2, inp.projection || 0));
   const cost = useMemo(() => computeCost({
-    width: inp.width, projection: inp.projection, decking, postCount: r.postCount,
+    width: sw, projection: sp, decking, postCount: r.postCount,
     needsGuard: r.needsGuard, stairTreads: r.stairs?.treads ?? 0, hasStairs: !!r.stairs,
-  }), [inp.width, inp.projection, decking, r.postCount, r.needsGuard, r.stairs]);
+  }), [sw, sp, decking, r.postCount, r.needsGuard, r.stairs]);
   const set = <K extends keyof DeckInputs>(k: K, v: DeckInputs[K]) => setInp((p) => ({ ...p, [k]: v }));
 
   const headline = (() => {
@@ -60,12 +64,12 @@ export default function DeckCalculator({ initialState, focus }: { initialState?:
       <div className="space-y-4 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm print:hidden">
         <div className="grid grid-cols-2 gap-4">
           <Field label="Deck width (ft)" hint="Along the house">
-            <input type="number" min={4} className={ctl} value={inp.width} onFocus={sel}
-              onChange={(e) => set("width", +e.target.value || 0)} />
+            <input type="number" min={2} max={60} className={ctl} value={inp.width} onFocus={sel}
+              onChange={(e) => set("width", Math.max(0, +e.target.value || 0))} />
           </Field>
           <Field label="Projection (ft)" hint="Out from the house = joist span">
-            <input type="number" min={4} className={ctl} value={inp.projection} onFocus={sel}
-              onChange={(e) => set("projection", +e.target.value || 0)} />
+            <input type="number" min={2} max={40} className={ctl} value={inp.projection} onFocus={sel}
+              onChange={(e) => set("projection", Math.max(0, +e.target.value || 0))} />
           </Field>
         </div>
         <div className="grid grid-cols-2 gap-4">
@@ -77,8 +81,8 @@ export default function DeckCalculator({ initialState, focus }: { initialState?:
             </select>
           </Field>
           <Field label="Deck height (ft)" hint="Surface above grade">
-            <input type="number" min={0} step={0.5} className={ctl} value={inp.heightFt} onFocus={sel}
-              onChange={(e) => set("heightFt", +e.target.value || 0)} />
+            <input type="number" min={0} max={40} step={0.5} className={ctl} value={inp.heightFt} onFocus={sel}
+              onChange={(e) => set("heightFt", Math.max(0, +e.target.value || 0))} />
           </Field>
         </div>
         <Field label="Lumber species" hint="No. 2 grade, pressure-treated for ground contact">
@@ -142,7 +146,7 @@ export default function DeckCalculator({ initialState, focus }: { initialState?:
             <div className="text-sm font-semibold text-stone-700">Code-compliant framing plan</div>
             <button type="button" onClick={() => window.print()} className="text-xs font-medium text-amber-700 hover:text-amber-800 print:hidden">Print / save PDF</button>
           </div>
-          <FramingDiagram width={inp.width} projection={inp.projection} joistCount={r.joistCount}
+          <FramingDiagram width={sw} projection={sp} joistCount={r.joistCount}
             postCount={r.postCount} joistSize={r.joistSize} beamSize={r.beamSize} postSpacingIn={r.postSpacingIn} valid={r.valid} />
           <Row label="Joists" value={`${r.joistCount} × ${r.joistSize ?? "—"}`} sub={`${r.joistLinealFt} lin ft`} accent={focus === "joist"} />
           <Row label="Beam" value={r.beamSize.replace("-", " × ")} sub="IRC R507.5" accent={focus === "beam"} />

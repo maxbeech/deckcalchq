@@ -24,12 +24,12 @@ export default function RailingCalculator() {
     <div className="grid gap-6 md:grid-cols-2">
       <div className="space-y-4 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
         <Field label="Total railing length (ft)" hint="Open perimeter that needs a guard">
-          <input type="number" min={1} className={ctl} value={inp.railLengthFt} onFocus={sel}
-            onChange={(e) => set("railLengthFt", +e.target.value || 0)} />
+          <input type="number" min={1} max={300} className={ctl} value={inp.railLengthFt} onFocus={sel}
+            onChange={(e) => set("railLengthFt", Math.max(0, +e.target.value || 0))} />
         </Field>
         <Field label="Post spacing (ft)" hint="Center-to-center between rail posts">
           <input type="number" min={2} max={8} step={0.5} className={ctl} value={inp.postSpacingFt} onFocus={sel}
-            onChange={(e) => set("postSpacingFt", +e.target.value || 0)} />
+            onChange={(e) => set("postSpacingFt", Math.max(0, +e.target.value || 0))} />
         </Field>
         <Field label="Baluster style">
           <select className={ctl} value={inp.style} onChange={(e) => set("style", e.target.value as BalusterStyle)}>
