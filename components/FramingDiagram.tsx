@@ -32,7 +32,7 @@ export default function FramingDiagram({
       aria-label={`Deck framing plan: ${width} ft wide by ${projection} ft projection, ${joistCount} joists, ${postCount} posts`}>
       <rect x={left} y={top} width={deckW} height={deckH} fill="#fffbeb" stroke="#e7e5e4" />
       {/* House wall + ledger */}
-      <text x={W / 2} y={12} textAnchor="middle" className="fill-stone-400" fontSize="10">HOUSE</text>
+      <text x={W / 2} y={12} textAnchor="middle" className="fill-stone-600" fontSize="10">HOUSE</text>
       <line x1={left} y1={top} x2={right} y2={top} stroke="#78716c" strokeWidth={4} />
       {/* Joists */}
       {joists.map((x, i) => (
@@ -48,13 +48,13 @@ export default function FramingDiagram({
         </g>
       ))}
       {/* Dimensions */}
-      <text x={W / 2} y={top - 6} textAnchor="middle" className="fill-stone-500" fontSize="9">
+      <text x={W / 2} y={top - 6} textAnchor="middle" className="fill-stone-600" fontSize="9">
         ← {width} ft wide ({joistCount} × {joistSize ?? "?"} joists) →
       </text>
-      <text x={W / 2} y={H - 6} textAnchor="middle" className="fill-stone-500" fontSize="9">
+      <text x={W / 2} y={H - 6} textAnchor="middle" className="fill-stone-600" fontSize="9">
         beam: {beamSize.replace("-", " × ")} · {postCount} posts @ {ftIn(postSpacingIn)} o.c.
       </text>
-      <text x={right + 2} y={(top + beamY) / 2} className="fill-stone-400" fontSize="9"
+      <text x={right + 2} y={(top + beamY) / 2} className="fill-stone-600" fontSize="9"
         transform={`rotate(90 ${right + 2} ${(top + beamY) / 2})`} textAnchor="middle">
         {projection} ft projection
       </text>

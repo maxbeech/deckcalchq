@@ -22,7 +22,7 @@ export default function StatesIndex() {
           <Link key={s.slug} href={`/states/${s.slug}`}
             className="flex items-center justify-between rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm hover:border-amber-300">
             <span className="text-stone-700">{s.name}</span>
-            <span className="text-xs text-stone-400">{s.frost}&quot;</span>
+            <span className="text-xs text-stone-500">{s.frost}&quot;</span>
           </Link>
         ))}
       </div>

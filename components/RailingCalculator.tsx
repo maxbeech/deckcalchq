@@ -8,7 +8,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
     <label className="block">
       <span className="block text-sm font-medium text-stone-700">{label}</span>
       {children}
-      {hint && <span className="mt-0.5 block text-xs text-stone-400">{hint}</span>}
+      {hint && <span className="mt-0.5 block text-xs text-stone-500">{hint}</span>}
     </label>
   );
 }
@@ -63,7 +63,7 @@ export default function RailingCalculator() {
           <div className="flex justify-between border-t border-stone-100 py-2"><span className="text-sm text-stone-600">Rail posts</span><span className="font-semibold text-stone-900">{r.totalPosts}</span></div>
           <div className="flex justify-between border-t border-stone-100 py-2"><span className="text-sm text-stone-600">Clear span per section</span><span className="font-semibold text-stone-900">{r.sectionClearIn}″</span></div>
           <div className="flex justify-between border-t border-stone-100 py-2"><span className="text-sm text-stone-600">Guard height (R312)</span><span className="font-semibold text-stone-900">{r.guardHeightIn}″ min</span></div>
-          <p className="mt-3 text-xs text-stone-400">
+          <p className="mt-3 text-xs text-stone-500">
             Even gap = (section clear − balusters × width) ÷ (balusters + 1). Code requires the gap to reject a
             4″ sphere (IRC R312.1.3); 3½″ is the safe build target. Guards are 36″ min on residential decks.
           </p>

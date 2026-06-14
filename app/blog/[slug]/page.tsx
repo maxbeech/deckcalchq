@@ -46,7 +46,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Guides", href: "/blog" }, { name: p.title }]} />
       <h1 className="text-2xl font-bold tracking-tight text-stone-900 sm:text-3xl">{p.title}</h1>
-      <div className="mt-2 text-sm text-stone-400">{p.readMins} min read</div>
+      <div className="mt-2 text-sm text-stone-500">{p.readMins} min read</div>
       <div className="mt-6 space-y-4">
         {p.body.map((b, i) => {
           if (b.type === "h2") return <h2 key={i} className="mt-6 text-xl font-bold text-stone-900">{b.text}</h2>;
@@ -64,7 +64,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         <p className="mt-2 text-sm text-stone-600">
           {rel ? `Put these numbers into the ${rel.name.toLowerCase()} calculator and get a code-compliant answer in seconds.` : "Get joist, beam, footing and stair sizes for your deck from the real IRC R507 tables — in seconds."}
         </p>
-        <Link href={rel ? `/calculators/${rel.slug}` : "/"} className="mt-3 inline-block rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-500">
+        <Link href={rel ? `/calculators/${rel.slug}` : "/"} className="mt-3 inline-block rounded-lg bg-amber-700 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600">
           {rel ? `Open the ${rel.name} calculator →` : "Open the deck calculator →"}
         </Link>
       </div>

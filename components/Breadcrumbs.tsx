@@ -19,7 +19,7 @@ export default function Breadcrumbs({ items }: { items: Crumb[] }) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <nav className="mb-4 text-sm text-stone-400" aria-label="Breadcrumb">
+      <nav className="mb-4 text-sm text-stone-500" aria-label="Breadcrumb">
         {items.map((c, i) => (
           <span key={c.name}>
             {i > 0 && " › "}

@@ -24,7 +24,7 @@ export default function CostBreakdown({
         <tbody>
           {cost.items.map((it) => (
             <tr key={it.label} className="border-t border-stone-100">
-              <td className="py-1.5 text-stone-600">{it.label}<span className="block text-xs text-stone-400">{it.detail}</span></td>
+              <td className="py-1.5 text-stone-600">{it.label}<span className="block text-xs text-stone-500">{it.detail}</span></td>
               <td className="py-1.5 text-right tabular-nums text-stone-500">{money(it.low)}–{money(it.high)}</td>
             </tr>
           ))}
@@ -38,7 +38,7 @@ export default function CostBreakdown({
         <div>≈ ${cost.perSqftLow}–${cost.perSqftHigh}/sq ft</div>
         <div className="text-right">≈ {cost.boards16ft} × 16′ boards · {cost.deckScrews.toLocaleString()} screws</div>
       </div>
-      <p className="mt-2 text-xs text-stone-400">
+      <p className="mt-2 text-xs text-stone-500">
         Low = DIY material budget; high = contractor-installed (labor included). Regional prices vary —
         treat as a planning range, not a quote.
       </p>

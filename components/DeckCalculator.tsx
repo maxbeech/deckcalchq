@@ -16,7 +16,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
     <label className="block">
       <span className="block text-sm font-medium text-stone-700">{label}</span>
       {children}
-      {hint && <span className="mt-0.5 block text-xs text-stone-400">{hint}</span>}
+      {hint && <span className="mt-0.5 block text-xs text-stone-500">{hint}</span>}
     </label>
   );
 }
@@ -29,7 +29,7 @@ function Row({ label, value, sub, accent }: { label: string; value: string; sub?
       <span className="text-sm text-stone-600">{label}</span>
       <span className="text-right">
         <span className={`font-semibold tabular-nums ${accent ? "text-amber-700" : "text-stone-900"}`}>{value}</span>
-        {sub && <span className="ml-2 text-xs text-stone-400">{sub}</span>}
+        {sub && <span className="ml-2 text-xs text-stone-500">{sub}</span>}
       </span>
     </div>
   );
@@ -157,7 +157,7 @@ export default function DeckCalculator({ initialState, focus }: { initialState?:
           <Row label="Ledger fasteners" value={`½″ lag @ ${r.ledgerLagSpacingIn}″`} sub={`or bolt @ ${r.ledgerBoltSpacingIn}″ · R507.9`} accent={focus === "ledger"} />
           {r.stairs && <Row label="Stairs" value={`${r.stairs.risers} risers @ ${r.stairs.riserIn}″`} sub={`${r.stairs.treads} treads · ${ftIn(r.stairs.totalRunIn)} run`} accent={focus === "stair"} />}
           <Row label="Guardrail" value={r.needsGuard ? `${r.guardHeightIn}″ required` : "Optional (≤30″)"} sub="IRC R312" />
-          <p className="mt-3 text-xs text-stone-400">
+          <p className="mt-3 text-xs text-stone-500">
             Member sizes read from the IRC R507.6 (joists) and R507.5 (beams) tables for No.&nbsp;2
             {" "}{SPECIES_LABEL[inp.species]} at 40&nbsp;psf live + 10&nbsp;psf dead. Footings from tributary load ÷
             soil bearing (R507.3); ledger fasteners per R507.9. Confirm with your local building department.

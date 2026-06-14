@@ -62,7 +62,7 @@ export default function Methodology() {
           Ready to size your deck? The calculator returns joist, beam, footing, ledger and stair details in
           seconds — each with its code reference.
         </p>
-        <Link href="/" className="mt-3 inline-block rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-500">
+        <Link href="/" className="mt-3 inline-block rounded-lg bg-amber-700 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600">
           Open the deck calculator →
         </Link>
       </div>

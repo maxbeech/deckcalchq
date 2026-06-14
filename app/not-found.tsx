@@ -15,7 +15,7 @@ export default function NotFound() {
             {c.name}
           </Link>
         ))}
-        <Link href="/" className="rounded-full bg-amber-600 px-3 py-1 text-sm font-medium text-white hover:bg-amber-500">
+        <Link href="/" className="rounded-full bg-amber-700 px-3 py-1 text-sm font-medium text-white hover:bg-amber-600">
           Home
         </Link>
       </div>
