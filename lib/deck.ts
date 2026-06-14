@@ -38,6 +38,8 @@ export interface DeckResult {
   footingAreaSqft: number;
   footingDiameterIn: number;
   footingDepthIn: number;
+  footingConcreteCuFt: number;  // concrete per pier
+  concreteBags80: number;       // total 80-lb bags for all piers
   ledgerLagSpacingIn: number;   // IRC R507.9.1.3 — ½" lag screws
   ledgerBoltSpacingIn: number;  // IRC R507.9.1.3 — ½" through-bolts
   guardHeightIn: number;
@@ -128,6 +130,9 @@ export function computeDeck(raw: DeckInputs): DeckResult {
   const footingDiameterIn = FOOTINGS.find((d) => d >= reqDiaIn) ?? 36;
   if (reqDiaIn > 36) warnings.push("Required footing exceeds 36\" diameter — verify soil bearing or add an intermediate post.");
   const footingDepthIn = frostDepth(inp.state);
+  // Concrete per cylindrical pier: π·r²·h. An 80-lb bag yields ~0.60 cu ft.
+  const footingConcreteCuFt = Math.round(Math.PI * (footingDiameterIn / 24) ** 2 * (footingDepthIn / 12) * 100) / 100;
+  const concreteBags80 = Math.ceil((footingConcreteCuFt * postCount) / 0.6);
 
   // --- Ledger fasteners (IRC R507.9.1.3) — spacing by supported joist span ---
   const lcol = colForJoistSpan(inp.projection);
@@ -157,6 +162,7 @@ export function computeDeck(raw: DeckInputs): DeckResult {
     beamSize, beamMaxPostSpacingIn, postCount, postSpacingIn,
     postSize, footingTribSqft: Math.round(tributarySqft * 10) / 10, footingLoadLb: loadLb,
     footingAreaSqft: Math.round(areaSqft * 100) / 100, footingDiameterIn, footingDepthIn,
+    footingConcreteCuFt, concreteBags80,
     ledgerLagSpacingIn, ledgerBoltSpacingIn,
     guardHeightIn: 36, needsGuard, stairs, valid,
     warnings, fmt: ftIn,

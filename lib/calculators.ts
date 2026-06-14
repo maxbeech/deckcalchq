@@ -2,7 +2,7 @@
 // keyword-targeted copy and a `focus` that foregrounds the relevant result.
 // Search volumes are live US Google Ads data (fetched 2026-06-14), shown for transparency.
 
-export type Focus = "joist" | "beam" | "footing" | "stair" | "cost" | "ledger";
+export type Focus = "joist" | "beam" | "footing" | "stair" | "cost" | "ledger" | "railing";
 
 export interface Calc {
   slug: string;
@@ -56,13 +56,13 @@ export const CALCS: Calc[] = [
     h1: "Deck Footing Size & Depth Calculator",
     keyword: "deck footing calculator",
     volume: "1,300/mo",
-    meta: "Free deck footing calculator — get the footing diameter from your post load and soil bearing, plus the required depth below the frost line for your state (IRC R507.3).",
+    meta: "Free deck footing calculator — get the footing diameter from your post load and soil bearing, the depth below your state's frost line, and the concrete (bags) each pier needs (IRC R507.3).",
     intro:
-      "Each deck post carries a tributary slice of the deck down to a footing. This calculator works out the load on each footing, the bearing area it needs over your soil, and how deep it must go below the frost line in your state.",
+      "Each deck post carries a tributary slice of the deck down to a footing. This calculator works out the load on each footing, the bearing area it needs over your soil, how deep it must go below the frost line in your state, and how much concrete to buy.",
     notes: [
       "Footing area = post load ÷ soil bearing. The default 1,500 psf is the IRC presumptive value for sand/silt/clay; gravel can bear far more.",
       "The footing bottom must sit below the local frost line so it can't heave — that's why a Minnesota footing is 5 ft deep and a Florida one is 12\".",
-      "Even frost-free regions need at least 12\" to reach undisturbed, load-bearing soil.",
+      "Concrete per pier = π × radius² × depth; an 80-lb bag of mix yields about 0.6 cubic feet. Even frost-free regions need at least 12\" to reach undisturbed soil.",
     ],
   },
   {
@@ -111,6 +111,22 @@ export const CALCS: Calc[] = [
       "Board count assumes 5/4×6 decking (5.5\" wide) with a 1/4\" gap and ~10% cutting waste; order full lengths to minimise seams.",
       "Composite and hardwood need hidden fasteners or pre-drilling — budget more time and a specific screw or clip system.",
       "Always order framing and decking from the same yard run so the lumber matches in moisture and size.",
+    ],
+  },
+  {
+    slug: "deck-railing-calculator",
+    focus: "railing",
+    name: "Deck Railing & Baluster",
+    h1: "Deck Railing & Baluster Spacing Calculator",
+    keyword: "baluster calculator",
+    volume: "1,600/mo",
+    meta: "Free deck railing & baluster spacing calculator — get the exact number of balusters and an even gap that passes the IRC 4-inch sphere rule for your railing length.",
+    intro:
+      "Lay out your deck railing so the baluster gaps are even AND code-legal. Enter your railing length and post spacing and the calculator solves the baluster count and the exact even gap that keeps a 4-inch sphere out (IRC R312).",
+    notes: [
+      "The code test is a 4\" sphere: the clear gap between balusters (and between a baluster and a post) must be under 4\". Build to 3½\" so you're never on the line at inspection.",
+      "Residential deck guards must be at least 36\" tall, measured from the deck surface to the top of the rail.",
+      "Even spacing = (section clear width − total baluster width) ÷ (number of gaps). The calculator does this per section so every bay matches.",
     ],
   },
 ];

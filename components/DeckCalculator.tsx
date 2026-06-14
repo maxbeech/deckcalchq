@@ -149,6 +149,7 @@ export default function DeckCalculator({ initialState, focus }: { initialState?:
           <Row label="Support posts" value={`${r.postCount} × 6x6`} sub={`${ftIn(r.postSpacingIn)} apart`} />
           <Row label="Footing size" value={`${r.footingDiameterIn}″ dia.`} sub={`${r.footingAreaSqft} ft² · ${r.footingLoadLb} lb/post`} accent={focus === "footing"} />
           <Row label="Footing depth" value={`${r.footingDepthIn}″`} sub="below grade (frost line)" accent={focus === "footing"} />
+          <Row label="Concrete" value={`${r.concreteBags80} × 80-lb bags`} sub={`${r.footingConcreteCuFt} ft³ per pier`} accent={focus === "footing"} />
           <Row label="Ledger fasteners" value={`½″ lag @ ${r.ledgerLagSpacingIn}″`} sub={`or bolt @ ${r.ledgerBoltSpacingIn}″ · R507.9`} accent={focus === "ledger"} />
           {r.stairs && <Row label="Stairs" value={`${r.stairs.risers} risers @ ${r.stairs.riserIn}″`} sub={`${r.stairs.treads} treads · ${ftIn(r.stairs.totalRunIn)} run`} accent={focus === "stair"} />}
           <Row label="Guardrail" value={r.needsGuard ? `${r.guardHeightIn}″ required` : "Optional (≤30″)"} sub="IRC R312" />

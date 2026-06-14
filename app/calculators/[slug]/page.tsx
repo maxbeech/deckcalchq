@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import DeckCalculator from "@/components/DeckCalculator";
+import RailingCalculator from "@/components/RailingCalculator";
 import { BeamSpanTable, JoistSpanTable } from "@/components/SpanTable";
 import { CALCS, getCalc } from "@/lib/calculators";
 import { SITE } from "@/lib/site";
@@ -41,13 +43,10 @@ export default async function CalcPage({ params }: { params: Promise<{ slug: str
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <nav className="mb-4 text-sm text-stone-400">
-        <Link href="/" className="hover:text-stone-700">Home</Link> ›{" "}
-        <Link href="/calculators" className="hover:text-stone-700">Calculators</Link> › {c.name}
-      </nav>
+      <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Calculators", href: "/calculators" }, { name: c.name }]} />
       <h1 className="text-2xl font-bold tracking-tight text-stone-900 sm:text-3xl">{c.h1}</h1>
       <p className="mt-2 max-w-2xl text-stone-600">{c.intro}</p>
-      <div className="mt-6"><DeckCalculator focus={c.focus} /></div>
+      <div className="mt-6">{c.focus === "railing" ? <RailingCalculator /> : <DeckCalculator focus={c.focus} />}</div>
 
       {c.focus === "joist" && (
         <section className="mt-10 space-y-6 rounded-2xl border border-stone-200 bg-white p-6">

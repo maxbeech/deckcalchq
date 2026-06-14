@@ -7,6 +7,7 @@ import {
 import { JOIST_SPAN, BEAM_SPAN, ftIn } from "../lib/deck-tables.ts";
 import { US_STATES, frostDepth } from "../lib/frost.ts";
 import { computeCost } from "../lib/cost.ts";
+import { computeRailing, DEFAULT_RAILING } from "../lib/railing.ts";
 
 let pass = 0, fail = 0;
 function check(name: string, cond: boolean, detail = "") {
@@ -76,6 +77,21 @@ check("cost items sum to total", c.items.reduce((s, i) => s + i.low, 0) === c.to
 check("composite costs more than pt", computeCost({ width: 16, projection: 12, decking: "composite", postCount: 4, needsGuard: true, stairTreads: 4, hasStairs: true }).totalHigh > c.totalHigh);
 check("board count > 0", c.boards16ft > 0 && c.deckScrews > 0);
 check("no railing line when guard not needed", computeCost({ width: 12, projection: 10, decking: "pt", postCount: 3, needsGuard: false, stairTreads: 0, hasStairs: false }).railingLinFt === 0);
+
+// --- Concrete volume (footing piers) ---
+check("footing concrete cu ft > 0", d.footingConcreteCuFt > 0, `${d.footingConcreteCuFt}`);
+check("concrete bags = ceil(total / 0.6)", d.concreteBags80 === Math.ceil((d.footingConcreteCuFt * d.postCount) / 0.6));
+check("deeper frost → more concrete", computeDeck({ ...DEFAULT_DECK, state: "minnesota" }).concreteBags80 >= computeDeck({ ...DEFAULT_DECK, state: "florida" }).concreteBags80);
+
+// --- Railing / baluster engine (IRC R312) ---
+const rail = computeRailing(DEFAULT_RAILING);
+check("railing gap under 4in (code)", rail.gapOk && rail.evenGapIn < 4, `${rail.evenGapIn}`);
+check("railing balusters > 0", rail.totalBalusters > 0 && rail.balustersPerSection > 0);
+check("railing posts = sections + 1", rail.totalPosts === rail.sections + 1);
+check("longer rail → more balusters", computeRailing({ ...DEFAULT_RAILING, railLengthFt: 80 }).totalBalusters > rail.totalBalusters);
+check("wider baluster → fewer per section gap stays legal", computeRailing({ ...DEFAULT_RAILING, style: "square075" }).evenGapIn < 4);
+// guard never allows a 4" gap even with odd inputs
+check("never exceeds 4in gap", computeRailing({ ...DEFAULT_RAILING, postSpacingFt: 8, maxGapIn: 3.9 }).evenGapIn < 4);
 
 // --- monotonicity & species ordering ---
 check("bigger projection needs bigger joist",

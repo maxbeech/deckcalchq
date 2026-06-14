@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import DeckCalculator from "@/components/DeckCalculator";
 import { getState, US_STATES } from "@/lib/frost";
 import { SITE } from "@/lib/site";
@@ -29,10 +30,7 @@ export default async function StatePage({ params }: { params: Promise<{ slug: st
 
   return (
     <>
-      <nav className="mb-4 text-sm text-stone-400">
-        <Link href="/" className="hover:text-stone-700">Home</Link> ›{" "}
-        <Link href="/states" className="hover:text-stone-700">By state</Link> › {s.name}
-      </nav>
+      <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "By state", href: "/states" }, { name: s.name }]} />
       <h1 className="text-2xl font-bold tracking-tight text-stone-900 sm:text-3xl">
         {s.name} Deck Code &amp; Footing Depth
       </h1>

@@ -10,12 +10,14 @@ export interface Post {
   keyword: string;
   date: string;
   readMins: number;
+  related?: string; // related calculator slug
   body: Block[];
 }
 
 export const POSTS: Post[] = [
   {
     slug: "how-far-can-a-deck-joist-span",
+    related: "deck-joist-span-calculator",
     title: "How Far Can a Deck Joist Span?",
     description: "Maximum deck joist spans for 2x6, 2x8, 2x10 and 2x12 lumber at 12, 16 and 24 inch spacing — straight from the IRC R507.6 deck table.",
     keyword: "how far can a deck joist span",
@@ -39,6 +41,7 @@ export const POSTS: Post[] = [
   },
   {
     slug: "what-size-beam-for-a-deck",
+    related: "deck-beam-span-calculator",
     title: "What Size Beam Does My Deck Need?",
     description: "How to pick a deck beam size from the IRC R507.5 table based on the joist span it carries and how far the beam must reach between posts.",
     keyword: "what size beam for a deck",
@@ -61,6 +64,7 @@ export const POSTS: Post[] = [
   },
   {
     slug: "deck-footing-size-and-depth",
+    related: "deck-footing-calculator",
     title: "Deck Footing Size and Depth, Explained",
     description: "How to work out deck footing diameter from post load and soil bearing, and how deep footings must go below the frost line in your state.",
     keyword: "deck footing size",
@@ -78,6 +82,7 @@ export const POSTS: Post[] = [
   },
   {
     slug: "how-to-build-deck-stairs",
+    related: "deck-stair-calculator",
     title: "How to Build Code-Compliant Deck Stairs",
     description: "Lay out deck stairs to IRC R311.7 — riser height, tread depth, stringer spacing and the total run you need from your deck height.",
     keyword: "deck stair calculator",
@@ -100,6 +105,7 @@ export const POSTS: Post[] = [
   },
   {
     slug: "do-i-need-a-permit-to-build-a-deck",
+    related: "deck-joist-span-calculator",
     title: "Do I Need a Permit to Build a Deck?",
     description: "When a deck needs a building permit, what the inspector checks, and how to prepare drawings that pass the first time.",
     keyword: "do i need a permit to build a deck",
@@ -127,6 +133,7 @@ export const POSTS: Post[] = [
   },
   {
     slug: "how-much-does-a-deck-cost",
+    related: "deck-cost-calculator",
     title: "How Much Does It Cost to Build a Deck?",
     description: "Realistic 2026 deck cost ranges by size and material, where the money goes, and how much you save by doing your own framing.",
     keyword: "how much does a deck cost",
@@ -150,6 +157,7 @@ export const POSTS: Post[] = [
   },
   {
     slug: "deck-joist-spacing-12-vs-16-vs-24",
+    related: "deck-joist-span-calculator",
     title: "Deck Joist Spacing: 12 vs 16 vs 24 Inches",
     description: "How joist spacing changes your maximum span, decking choice and deck stiffness — and when to use 12, 16 or 24 inch on-center.",
     keyword: "deck joist spacing",
@@ -171,6 +179,7 @@ export const POSTS: Post[] = [
   },
   {
     slug: "how-many-footings-does-a-deck-need",
+    related: "deck-footing-calculator",
     title: "How Many Footings Does a Deck Need?",
     description: "How to work out the number of deck footings from your beam size, post spacing and deck width — and why bigger beams mean fewer holes to dig.",
     keyword: "how many footings for a deck",
@@ -191,6 +200,7 @@ export const POSTS: Post[] = [
   },
   {
     slug: "deck-ledger-board-attachment",
+    related: "deck-footing-calculator",
     title: "Deck Ledger Board Attachment Done Right",
     description: "Why the ledger is the most important connection on a deck, how to fasten and flash it to code, and when a free-standing deck is the better call.",
     keyword: "deck ledger board attachment",
@@ -212,6 +222,7 @@ export const POSTS: Post[] = [
   },
   {
     slug: "2x8-vs-2x10-deck-joists",
+    related: "deck-joist-span-calculator",
     title: "2x8 vs 2x10 Deck Joists: Which Should You Use?",
     description: "When to step up from 2x8 to 2x10 deck joists — the span difference, the cost, and how spacing factors in.",
     keyword: "2x8 vs 2x10 deck joists",
@@ -229,6 +240,28 @@ export const POSTS: Post[] = [
       ] },
       { type: "h2", text: "Let the table decide" },
       { type: "p", text: "Rather than guess, enter your projection and spacing into the calculator. It returns the smallest joist that legally clears your span, so you only pay for the lumber you actually need." },
+    ],
+  },
+  {
+    slug: "floating-deck-vs-attached-deck",
+    related: "deck-footing-calculator",
+    title: "Floating & Ground-Level Decks: What's Different",
+    description: "How a floating (freestanding) deck differs from an attached deck — no ledger, different footings, and when you can skip the deep frost piers.",
+    keyword: "floating deck",
+    date: "2026-06-14",
+    readMins: 5,
+    body: [
+      { type: "p", text: "A floating or ground-level deck sits low to the ground and is not bolted to the house. Because there's no ledger — the connection that causes most deck failures — a freestanding deck sidesteps the single riskiest detail. But it changes how you handle posts and footings." },
+      { type: "h2", text: "No ledger means no ledger problems" },
+      { type: "p", text: "An attached deck hangs half its weight on a ledger lag-bolted into the house's band joist, which must be flashed and fastened exactly to code (IRC R507.9). A freestanding deck carries its whole load on its own beams and posts at both ends, so there's nothing to pull away from the house and no flashing to leak. That's why builders often go freestanding when the band joist is questionable — brick veneer, stucco, or engineered floor joists." },
+      { type: "h2", text: "Footings: when can you skip the deep piers?" },
+      { type: "ul", items: [
+        "If the deck surface is 30\" or less above grade and the deck is freestanding, many jurisdictions allow it to 'float' on precast deck blocks or shallow pads instead of frost-depth piers — because a little seasonal movement won't hurt anything not tied to the house.",
+        "Anything attached to the house, or taller, still needs footings below the frost line so the two structures move together.",
+        "Local rules vary widely — always confirm with your building department before you decide to skip frost piers.",
+      ] },
+      { type: "h2", text: "Sizing is otherwise the same" },
+      { type: "p", text: "Joists, beams and posts on a floating deck follow the same IRC R507 span tables as any other deck — the load doesn't change just because it's low. Use the calculator to size the framing, then decide on footings based on your height and whether it's attached. Guards are still required once you're over 30\" above grade." },
     ],
   },
 ];
