@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { getPost, POSTS } from "@/lib/posts";
 import { SITE } from "@/lib/site";
 
+export const revalidate = 604800; // 1 week — static blog content
+
 export function generateStaticParams() {
   return POSTS.map((p) => ({ slug: p.slug }));
 }

@@ -6,6 +6,7 @@ import {
 } from "../lib/deck.ts";
 import { JOIST_SPAN, BEAM_SPAN, ftIn } from "../lib/deck-tables.ts";
 import { US_STATES, frostDepth } from "../lib/frost.ts";
+import { computeCost } from "../lib/cost.ts";
 
 let pass = 0, fail = 0;
 function check(name: string, cond: boolean, detail = "") {
@@ -50,7 +51,31 @@ check("footing depth = NY frost 48", d.footingDepthIn === 48, `${d.footingDepthI
 check("needs guard at 3ft (>30in)", d.needsGuard);
 check("stairs riser <= 7.75", !!d.stairs && d.stairs.riserIn <= 7.75, `${d.stairs?.riserIn}`);
 check("stairs treads = risers - 1", !!d.stairs && d.stairs.treads === d.stairs.risers - 1);
-check("cost positive and ordered", d.costLow > 0 && d.costHigh > d.costLow);
+check("default deck valid", d.valid);
+
+// --- Ledger fasteners (IRC R507.9.1.3) pinned to published values ---
+// 12 ft joist span → ½" lag @ 15", ½" bolt @ 29"
+check("ledger lag @12ft = 15in", d.ledgerLagSpacingIn === 15, `${d.ledgerLagSpacingIn}`);
+check("ledger bolt @12ft = 29in", d.ledgerBoltSpacingIn === 29, `${d.ledgerBoltSpacingIn}`);
+check("short joist span loosens ledger", computeDeck({ ...DEFAULT_DECK, projection: 6 }).ledgerLagSpacingIn === 30);
+check("long joist span tightens ledger", computeDeck({ ...DEFAULT_DECK, projection: 16 }).ledgerLagSpacingIn === 11);
+
+// --- Input clamping (form can hold transient/empty values) ---
+check("zero/empty inputs clamp, don't crash", computeDeck({ ...DEFAULT_DECK, width: 0, projection: 0 }).joistSize !== undefined);
+check("over-long projection invalid + warned", !computeDeck({ ...DEFAULT_DECK, projection: 22 }).valid);
+
+// --- Stair landing (IRC R311.7.3) for tall decks ---
+const tall = computeDeck({ ...DEFAULT_DECK, heightFt: 14 });
+check("14ft deck needs stair landing", !!tall.stairs && tall.stairs.needsLanding);
+check("3ft deck needs no landing", !!d.stairs && !d.stairs.needsLanding);
+
+// --- Cost model (lib/cost.ts) ---
+const c = computeCost({ width: 16, projection: 12, decking: "pt", postCount: 4, needsGuard: true, stairTreads: 4, hasStairs: true });
+check("cost total positive + ordered", c.totalLow > 0 && c.totalHigh > c.totalLow, `${c.totalLow}/${c.totalHigh}`);
+check("cost items sum to total", c.items.reduce((s, i) => s + i.low, 0) === c.totalLow);
+check("composite costs more than pt", computeCost({ width: 16, projection: 12, decking: "composite", postCount: 4, needsGuard: true, stairTreads: 4, hasStairs: true }).totalHigh > c.totalHigh);
+check("board count > 0", c.boards16ft > 0 && c.deckScrews > 0);
+check("no railing line when guard not needed", computeCost({ width: 12, projection: 10, decking: "pt", postCount: 3, needsGuard: false, stairTreads: 0, hasStairs: false }).railingLinFt === 0);
 
 // --- monotonicity & species ordering ---
 check("bigger projection needs bigger joist",

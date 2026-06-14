@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "./globals.css";
 import { SITE } from "@/lib/site";
@@ -9,6 +9,12 @@ export const metadata: Metadata = {
   description: SITE.description,
   openGraph: { title: SITE.name, description: SITE.description, url: SITE.url, siteName: SITE.name, type: "website" },
   twitter: { card: "summary_large_image", title: SITE.name, description: SITE.description },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#d97706",
 };
 
 function Header() {
@@ -41,6 +47,7 @@ function Footer() {
           <Link href="/calculators/deck-footing-calculator" className="hover:text-stone-900">Footings</Link>
           <Link href="/calculators/deck-stair-calculator" className="hover:text-stone-900">Stairs</Link>
           <Link href="/blog" className="hover:text-stone-900">Guides</Link>
+          <Link href="/methodology" className="hover:text-stone-900">Methodology</Link>
           <Link href="/pricing" className="hover:text-stone-900">Pro / permit plan</Link>
         </div>
         <p className="mt-4 max-w-2xl text-xs text-stone-400">

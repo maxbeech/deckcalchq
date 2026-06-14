@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import DeckCalculator from "@/components/DeckCalculator";
+import { BeamSpanTable, JoistSpanTable } from "@/components/SpanTable";
 import { CALCS, getCalc } from "@/lib/calculators";
 import { SITE } from "@/lib/site";
+
+export const revalidate = 604800; // 1 week — static reference content
 
 export function generateStaticParams() {
   return CALCS.map((c) => ({ slug: c.slug }));
@@ -44,7 +47,23 @@ export default async function CalcPage({ params }: { params: Promise<{ slug: str
       </nav>
       <h1 className="text-2xl font-bold tracking-tight text-stone-900 sm:text-3xl">{c.h1}</h1>
       <p className="mt-2 max-w-2xl text-stone-600">{c.intro}</p>
-      <div className="mt-6"><DeckCalculator /></div>
+      <div className="mt-6"><DeckCalculator focus={c.focus} /></div>
+
+      {c.focus === "joist" && (
+        <section className="mt-10 space-y-6 rounded-2xl border border-stone-200 bg-white p-6">
+          <h2 className="text-lg font-bold text-stone-900">Full deck joist span table (IRC R507.6)</h2>
+          <JoistSpanTable species="sp" />
+          <JoistSpanTable species="dfhf" />
+          <JoistSpanTable species="cedar" />
+        </section>
+      )}
+      {c.focus === "beam" && (
+        <section className="mt-10 space-y-6 rounded-2xl border border-stone-200 bg-white p-6">
+          <h2 className="text-lg font-bold text-stone-900">Full deck beam span table (IRC R507.5)</h2>
+          <BeamSpanTable species="sp" />
+          <BeamSpanTable species="dfhf" />
+        </section>
+      )}
 
       <section className="mt-10 rounded-2xl border border-stone-200 bg-white p-6">
         <h2 className="text-lg font-bold text-stone-900">{c.name} — what to know</h2>

@@ -2,6 +2,7 @@
 // sizing tool. Every member size is looked up in the real code span tables
 // (deck-tables.ts), every footing is computed from tributary load over soil
 // bearing, and every result carries its code citation. Pure + client-side.
+// Cost lives in lib/cost.ts (single source of truth for pricing).
 
 import {
   BEAM_SPAN, JOIST_SPAN, JOIST_SIZES, JOIST_SPAN_COLS, ftIn,
@@ -37,17 +38,21 @@ export interface DeckResult {
   footingAreaSqft: number;
   footingDiameterIn: number;
   footingDepthIn: number;
+  ledgerLagSpacingIn: number;   // IRC R507.9.1.3 — ½" lag screws
+  ledgerBoltSpacingIn: number;  // IRC R507.9.1.3 — ½" through-bolts
   guardHeightIn: number;
   needsGuard: boolean;
-  stairs: { risers: number; riserIn: number; treads: number; treadRunIn: number; totalRunIn: number } | null;
+  stairs: { risers: number; riserIn: number; treads: number; treadRunIn: number; totalRunIn: number; needsLanding: boolean } | null;
   deckAreaSqft: number;
-  costLow: number;
-  costHigh: number;
+  valid: boolean;       // false when the deck can't be framed prescriptively as drawn
   warnings: string[];
   fmt: (inches: number) => string;
 }
 
 const FOOTINGS = [12, 16, 18, 20, 24, 30, 36]; // common round/square footing sizes, in
+// IRC Table R507.9.1.3 — ledger fastener on-center spacing by joist span [6,8,10,12,14,16,18 ft]
+const LAG_SPACING = [30, 23, 18, 15, 13, 11, 10];
+const BOLT_SPACING = [36, 36, 34, 29, 24, 21, 19];
 
 export function maxJoistSpan(sp: Species, size: JoistSize, spacing: Spacing): number {
   const idx = spacing === 12 ? 0 : spacing === 16 ? 1 : 2;
@@ -60,12 +65,16 @@ export function recommendJoist(sp: Species, spacing: Spacing, targetIn: number):
   return null;
 }
 
+function colForJoistSpan(joistSpanFt: number): number {
+  let col = JOIST_SPAN_COLS.findIndex((c) => c >= joistSpanFt);
+  if (col === -1) col = JOIST_SPAN_COLS.length - 1; // beyond table → widest col (flagged separately)
+  return col;
+}
+
 // Max beam span (inches) for a supported joist span (ft). Uses the next-larger
 // tabulated joist-span column (conservative, matches how examiners read R507.5).
 export function maxBeamSpan(sp: Species, beam: BeamSize, joistSpanFt: number): number {
-  let col = JOIST_SPAN_COLS.findIndex((c) => c >= joistSpanFt);
-  if (col === -1) col = JOIST_SPAN_COLS.length - 1; // beyond table → use widest (flag separately)
-  return BEAM_SPAN[sp][beam][col];
+  return BEAM_SPAN[sp][beam][colForJoistSpan(joistSpanFt)];
 }
 
 // Smallest beam that allows at least `targetPostSpacingIn` between posts.
@@ -75,7 +84,16 @@ export function recommendBeam(sp: Species, joistSpanFt: number, targetIn: number
   return "3-2x12";
 }
 
-export function computeDeck(inp: DeckInputs): DeckResult {
+export function computeDeck(raw: DeckInputs): DeckResult {
+  // Clamp inputs to sane bounds so the displayed form can hold transient values
+  // (e.g. an empty field) without producing nonsense.
+  const inp: DeckInputs = {
+    ...raw,
+    width: Math.min(60, Math.max(2, raw.width || 0)),
+    projection: Math.min(40, Math.max(2, raw.projection || 0)),
+    heightFt: Math.min(40, Math.max(0, raw.heightFt || 0)),
+    soilBearing: Math.max(1500, raw.soilBearing || 1500),
+  };
   const warnings: string[] = [];
   const projIn = inp.projection * 12;
   const widthIn = inp.width * 12;
@@ -86,9 +104,9 @@ export function computeDeck(inp: DeckInputs): DeckResult {
   const joistMaxSpanIn = joistSize ? maxJoistSpan(inp.species, joistSize, inp.spacing) : 0;
   const joistOk = !!joistSize && joistMaxSpanIn >= projIn;
   if (!recJoist)
-    warnings.push(`A ${inp.projection} ft projection exceeds the IRC R507.6 prescriptive joist table — use a flush mid-beam, a drop beam, or an engineered design.`);
-  if (joistSize && !joistOk)
-    warnings.push(`A ${joistSize} joist only spans ${ftIn(joistMaxSpanIn)} at ${inp.spacing}" o.c.; your deck projects ${ftIn(projIn)}. Step up a size or tighten spacing.`);
+    warnings.push(`A ${inp.projection} ft projection exceeds the IRC R507.6 prescriptive joist table — split it with a mid-span beam (so each joist span is shorter) or use an engineered design.`);
+  else if (joistSize && !joistOk)
+    warnings.push(`A ${joistSize} joist only spans ${ftIn(joistMaxSpanIn)} at ${inp.spacing}" o.c.; your deck projects ${ftIn(projIn)}. Step up a size or tighten the spacing.`);
   const joistCount = Math.floor(widthIn / inp.spacing) + 1;
   const joistLinealFt = Math.round(joistCount * inp.projection);
 
@@ -101,7 +119,7 @@ export function computeDeck(inp: DeckInputs): DeckResult {
   const postSpacingIn = widthIn / (postCount - 1);
 
   // --- Posts (IRC R507.4) — 6x6 is the prescriptive minimum; 4x4 only for low decks ---
-  const postSize = inp.heightFt <= 4 ? '6x6 (4x4 permitted on low decks where allowed locally)' : "6x6";
+  const postSize = inp.heightFt <= 4 ? "6x6 (4x4 permitted on low decks where allowed locally)" : "6x6";
 
   // --- Footings (IRC R507.3) — tributary load over presumptive soil bearing ---
   const tributarySqft = (postSpacingIn / 12) * (inp.projection / 2);
@@ -109,8 +127,13 @@ export function computeDeck(inp: DeckInputs): DeckResult {
   const areaSqft = loadLb / inp.soilBearing;
   const reqDiaIn = Math.sqrt(areaSqft / Math.PI) * 2 * 12;
   const footingDiameterIn = FOOTINGS.find((d) => d >= reqDiaIn) ?? 36;
-  if (reqDiaIn > 36) warnings.push("Required footing exceeds 36\" — verify soil bearing or add posts.");
+  if (reqDiaIn > 36) warnings.push("Required footing exceeds 36\" diameter — verify soil bearing or add an intermediate post.");
   const footingDepthIn = frostDepth(inp.state);
+
+  // --- Ledger fasteners (IRC R507.9.1.3) — spacing by supported joist span ---
+  const lcol = colForJoistSpan(inp.projection);
+  const ledgerLagSpacingIn = LAG_SPACING[lcol];
+  const ledgerBoltSpacingIn = BOLT_SPACING[lcol];
 
   // --- Stairs (IRC R311.7) ---
   let stairs: DeckResult["stairs"] = null;
@@ -121,23 +144,23 @@ export function computeDeck(inp: DeckInputs): DeckResult {
     const riserIn = totalRise / risers;
     const treads = Math.max(1, risers - 1);
     const treadRunIn = 11; // 10" min run + 1" nosing (R311.7.5)
-    stairs = { risers, riserIn: Math.round(riserIn * 100) / 100, treads, treadRunIn, totalRunIn: treads * treadRunIn };
+    const needsLanding = totalRise > 151; // R311.7.3 — landing required per 12'-7" (151") of vertical rise
+    if (needsLanding) warnings.push("Stairs rise more than 12'7\" — an intermediate landing is required (IRC R311.7.3).");
+    stairs = { risers, riserIn: Math.round(riserIn * 100) / 100, treads, treadRunIn, totalRunIn: treads * treadRunIn, needsLanding };
   }
 
   // --- Guard (IRC R312) — required when walking surface > 30" above grade ---
   const needsGuard = inp.heightFt * 12 > 30;
-
-  // --- Materials & cost (real US ranges, 2026) ---
   const deckAreaSqft = Math.round(inp.width * inp.projection);
-  const perSqLow = inp.species === "cedar" ? 25 : 20; // DIY material + basic labor
-  const perSqHigh = inp.species === "cedar" ? 55 : 45; // contractor-installed
+  const valid = joistOk && inp.projection <= 18;
+
   return {
     joistSize, joistMaxSpanIn, joistOk, joistCount, joistLinealFt,
     beamSize, beamMaxPostSpacingIn, postCount, postSpacingIn,
     postSize, footingTribSqft: Math.round(tributarySqft * 10) / 10, footingLoadLb: loadLb,
     footingAreaSqft: Math.round(areaSqft * 100) / 100, footingDiameterIn, footingDepthIn,
-    guardHeightIn: 36, needsGuard, stairs, deckAreaSqft,
-    costLow: deckAreaSqft * perSqLow, costHigh: deckAreaSqft * perSqHigh,
+    ledgerLagSpacingIn, ledgerBoltSpacingIn,
+    guardHeightIn: 36, needsGuard, stairs, deckAreaSqft, valid,
     warnings, fmt: ftIn,
   };
 }

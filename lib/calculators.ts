@@ -1,6 +1,8 @@
 // Programmatic per-tool calculator pages. Each renders the same deck engine with
-// keyword-targeted copy. Search volumes are live US Google Ads data (fetched
-// 2026-06-14) and shown for transparency.
+// keyword-targeted copy and a `focus` that foregrounds the relevant result.
+// Search volumes are live US Google Ads data (fetched 2026-06-14), shown for transparency.
+
+export type Focus = "joist" | "beam" | "footing" | "stair" | "cost" | "ledger";
 
 export interface Calc {
   slug: string;
@@ -11,11 +13,13 @@ export interface Calc {
   meta: string;
   intro: string;
   notes: string[];
+  focus: Focus;
 }
 
 export const CALCS: Calc[] = [
   {
     slug: "deck-joist-span-calculator",
+    focus: "joist",
     name: "Deck Joist Span",
     h1: "Deck Joist Span Calculator (IRC R507.6)",
     keyword: "deck joist span calculator",
@@ -31,6 +35,7 @@ export const CALCS: Calc[] = [
   },
   {
     slug: "deck-beam-span-calculator",
+    focus: "beam",
     name: "Deck Beam Span",
     h1: "Deck Beam Span Calculator (IRC R507.5)",
     keyword: "deck beam span calculator",
@@ -46,6 +51,7 @@ export const CALCS: Calc[] = [
   },
   {
     slug: "deck-footing-calculator",
+    focus: "footing",
     name: "Deck Footing",
     h1: "Deck Footing Size & Depth Calculator",
     keyword: "deck footing calculator",
@@ -61,6 +67,7 @@ export const CALCS: Calc[] = [
   },
   {
     slug: "deck-stair-calculator",
+    focus: "stair",
     name: "Deck Stair",
     h1: "Deck Stair Calculator — Risers, Treads & Stringers",
     keyword: "deck stair calculator",
@@ -76,6 +83,7 @@ export const CALCS: Calc[] = [
   },
   {
     slug: "deck-cost-calculator",
+    focus: "cost",
     name: "Deck Cost",
     h1: "Deck Cost Calculator — What Will My Deck Cost?",
     keyword: "deck cost calculator",
@@ -87,6 +95,22 @@ export const CALCS: Calc[] = [
       "Pressure-treated pine is the cheapest framing; cedar and redwood cost more but resist rot and look better as decking.",
       "Labor is roughly half a contractor-built deck's cost — doing your own framing is where the savings are.",
       "Footings, stairs, railings and permits add up fast; this estimate covers the structure, not built-ins or grading.",
+    ],
+  },
+  {
+    slug: "deck-material-calculator",
+    focus: "cost",
+    name: "Deck Material",
+    h1: "Deck Material Calculator — Boards, Screws & Lumber",
+    keyword: "deck material calculator",
+    volume: "1,900/mo",
+    meta: "Free deck material calculator — how many deck boards, screws and lineal feet of framing your deck needs, plus a material cost estimate by decking type.",
+    intro:
+      "Work out the materials your deck takes — deck boards, screws and framing lumber — from its size and decking type. Change the decking material to see how the board count and budget shift.",
+    notes: [
+      "Board count assumes 5/4×6 decking (5.5\" wide) with a 1/4\" gap and ~10% cutting waste; order full lengths to minimise seams.",
+      "Composite and hardwood need hidden fasteners or pre-drilling — budget more time and a specific screw or clip system.",
+      "Always order framing and decking from the same yard run so the lumber matches in moisture and size.",
     ],
   },
 ];

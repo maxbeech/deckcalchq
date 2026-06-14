@@ -5,6 +5,8 @@ import DeckCalculator from "@/components/DeckCalculator";
 import { getState, US_STATES } from "@/lib/frost";
 import { SITE } from "@/lib/site";
 
+export const revalidate = 604800; // 1 week — static reference content
+
 export function generateStaticParams() {
   return US_STATES.map((s) => ({ slug: s.slug }));
 }

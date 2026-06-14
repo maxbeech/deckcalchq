@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE.url}/states`, lastModified: now, priority: 0.7 },
     { url: `${SITE.url}/blog`, lastModified: now, priority: 0.7 },
     { url: `${SITE.url}/pricing`, lastModified: now, priority: 0.6 },
+    { url: `${SITE.url}/methodology`, lastModified: now, priority: 0.5 },
   ];
   for (const c of CALCS) urls.push({ url: `${SITE.url}/calculators/${c.slug}`, lastModified: now, priority: 0.8 });
   for (const s of US_STATES) urls.push({ url: `${SITE.url}/states/${s.slug}`, lastModified: now, priority: 0.6 });
