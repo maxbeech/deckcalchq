@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import DeckCalculator from "@/components/DeckCalculator";
 import { CALCS } from "@/lib/calculators";
 import { POSTS } from "@/lib/posts";
 import { SITE } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "Free Deck Calculator — Joists, Beams, Footings & Stairs to Code",
+  description: SITE.description,
+  alternates: { canonical: SITE.url },
+};
 
 const faq = [
   {
